@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+</head>
+<body>
+
+<h1>Animal Table</h1>
+<!-- 
+<ul id="animals">
+
+</ul> -->
+
+
+<form action="/api/" method="post">
+  <label>Animal Name:
+      <input name="animalName" autocomplete="name">
+  </label>
+  <label>Animal Name:
+    <input name="animalEmoji" autocomplete="emoji">
+</label>
+  <label>Animal color:
+    <input name="animalColor" autocomplete="color">
+</label>
+<button>Save</button>
+</form>
+<br>
+<br>
+
+<table>
+  <thead>
+      <tr>
+          <th>Animal id</th>
+          <th>Animal emoji</th>
+          <th>Animal name</th>
+          <th>Animal color</th>
+          <th>Update Animal</th>
+          <th>Delete Animal</th>
+      </tr>
+  </thead>
+  <tbody id="animals">
+    <!-- <tr>
+      <td></td>
+      <td>enter name</td>
+      <td>enter color</td>
+      <td>add animal</td>
+      <td></td>
+    </tr> -->
+  </tbody>
+</table>
+
+
+<script>
+
+
+   let tbody = document.getElementById("animals")
+
+//  the function below allows us to generate content to the DOM
+//  var is completely usable but it does have some quirks related to scope
+
+
+  let animalDeleter = (id) => {
+    fetch(`/api/${id}`, {
+    method: 'DELETE' 
+    })
+    .then(console.log("it works"))
+    location.reload()
+  }
+
+   let animalBuilder = (data) => {
+       data.forEach(animal => {
+          let rowItem = document.createElement('tr')
+          tbody.appendChild(rowItem)
+          rowItem.innerHTML = `
+          <td>${animal.animalId}</td>
+          <td>${animal.animalEmoji}</td>  
+          <td> ${animal.animalName}</td> 
+          <td style="background-color:${animal.animalColor}" alt=${animal.animalColor}></td>
+          <td class="hover"> Update </td>
+          <td class="hover"> <a onclick="animalDeleter(${animal.animalId})">Delete</a> </td>
+          `
+        })
+   }
+
+
+
+
+//   fetch('http://localhost:8080/api/')
+//   .then(response => response.json())
+//   .then(data => document.body.textContent = JSON.stringify(data))
+
+//   fetch('http://localhost:8080/api/')
+//   .then(response => response.json())
+//   .then(data => data.forEach(animal => list.appendChild( 
+//      `<div>
+//         ${animal.animalName}
+//         </div>`
+//   )
+//   ))
+
+fetch('/api/')
+  .then(response => response.json())
+  .then(data => animalBuilder(data))
+
+
+</script>
+</body>
+</html>
