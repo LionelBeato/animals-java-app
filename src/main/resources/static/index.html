@@ -20,7 +20,7 @@
   <label>Animal Name:
       <input name="animalName" autocomplete="name">
   </label>
-  <label>Animal Name:
+  <label>Animal Emoji:
     <input name="animalEmoji" autocomplete="emoji">
 </label>
   <label>Animal color:
@@ -71,16 +71,41 @@
     location.reload()
   }
 
+  let animalUpdater = (id) => {
+
+     let nameInput = document.getElementById(`animal-name-${id}`).innerText
+     let emojiInput = document.getElementById(`animal-emoji-${id}`).innerText
+     let colorInput = document.getElementById(`animal-color-${id}`).innerText
+
+    let data = {
+        animalName: nameInput,
+        animalEmoji: emojiInput,
+        animalColor: colorInput
+
+    }
+
+      fetch(`/api/${id}`, {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        method: 'PUT',
+        body: JSON.stringify(data)
+    })
+    .then(console.log("it works"))
+    .then(console.log(data))
+ }
+
    let animalBuilder = (data) => {
        data.forEach(animal => {
           let rowItem = document.createElement('tr')
           tbody.appendChild(rowItem)
           rowItem.innerHTML = `
-          <td>${animal.animalId}</td>
-          <td>${animal.animalEmoji}</td>  
-          <td> ${animal.animalName}</td> 
-          <td style="background-color:${animal.animalColor}" alt=${animal.animalColor}></td>
-          <td class="hover"> Update </td>
+          <td id="animal-id-${animal.animalId}">${animal.animalId}</td>
+          <td contenteditable="true" id="animal-emoji-${animal.animalId}">${animal.animalEmoji}</td>
+          <td contenteditable="true" id="animal-name-${animal.animalId}"> ${animal.animalName}</td>
+          <td contenteditable="true" id="animal-color-${animal.animalId}" style="background-color:${animal.animalColor}" alt=${animal.animalColor}>${animal.animalColor}</td>
+          <td class="hover"> <a onclick="animalUpdater(${animal.animalId})">Update </a></td>
           <td class="hover"> <a onclick="animalDeleter(${animal.animalId})">Delete</a> </td>
           `
         })
