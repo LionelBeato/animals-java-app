@@ -59,6 +59,7 @@
 
    let tbody = document.getElementById("animals")
 
+
 //  the function below allows us to generate content to the DOM
 //  var is completely usable but it does have some quirks related to scope
 
@@ -68,20 +69,20 @@
     method: 'DELETE' 
     })
     .then(console.log("it works"))
-    location.reload()
+    .then(document.getElementById(`row-${id}`).remove())
+    .then(console.log("deleted an animal"))
   }
 
   let animalUpdater = (id) => {
 
-     let nameInput = document.getElementById(`animal-name-${id}`).innerText
-     let emojiInput = document.getElementById(`animal-emoji-${id}`).innerText
-     let colorInput = document.getElementById(`animal-color-${id}`).innerText
+   let nameInput = document.getElementById(`animal-name-${id}`)
+   let emojiInput = document.getElementById(`animal-emoji-${id}`)
+   let colorInput = document.getElementById(`animal-color-${id}`)
 
-    let data = {
-        animalName: nameInput,
-        animalEmoji: emojiInput,
-        animalColor: colorInput
-
+    let updatedAnimal = {
+        animalName: nameInput.innerText,
+        animalEmoji: emojiInput.innerText,
+        animalColor: colorInput.innerText
     }
 
       fetch(`/api/${id}`, {
@@ -90,15 +91,23 @@
             'Content-Type': 'application/json'
         },
         method: 'PUT',
-        body: JSON.stringify(data)
+        body: JSON.stringify(updatedAnimal)
     })
-    .then(console.log("it works"))
-    .then(console.log(data))
+    .then(response => response.json())
+    .then(json => {
+        nameInput.innerText = json.animalName
+        emojiInput.innerText = json.animalEmoji
+        colorInput.innerText = json.animalColor
+        colorInput.style.backgroundColor = json.animalColor
+        }
+    )
  }
 
    let animalBuilder = (data) => {
+
        data.forEach(animal => {
           let rowItem = document.createElement('tr')
+          rowItem.id = `row-${animal.animalId}`
           tbody.appendChild(rowItem)
           rowItem.innerHTML = `
           <td id="animal-id-${animal.animalId}">${animal.animalId}</td>
@@ -127,9 +136,13 @@
 //   )
 //   ))
 
+let fetchAnimals = () => {
 fetch('/api/')
   .then(response => response.json())
   .then(data => animalBuilder(data))
+  }
+
+  fetchAnimals()
 
 
 </script>

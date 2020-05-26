@@ -73,6 +73,9 @@ public class AnimalController {
         return animalService.getAllAnimals();
     }
 
+
+//    testing redirects
+
     @RequestMapping("/a")
     public RedirectView localRedirect() {
         RedirectView redirectView = new RedirectView();
